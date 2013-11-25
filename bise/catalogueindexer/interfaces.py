@@ -26,71 +26,20 @@ class ICatalogueIndexerSettings(Interface):
 
 class ICatalogueBase(Interface):
 
-    title = schema.TextLine(
-        title=_(u"Resource title"),
-        required=True,
-    )
+    def index_creation():
+        """
+        A method to index this object in the catalogue
+        when the object is created for the first time
+        """
 
-    site = schema.TextLine(
-        title=_(u"Site id"),
-        required=True,
-    )
+    def index_update():
+        """
+        A method to index this object in the catalogue
+        when the object is modified
+        """
 
-    english_title = schema.TextLine(
-        title=_(u"Resource's english title"),
-        required=True,
-    )
-
-    author = schema.TextLine(
-        title=_(u"Resource's author"),
-        required=True,
-    )
-
-    language_ids = schema.TextLine(
-        title=_(u"Resource's language ids"),
-        required=True,
-    )
-
-    published_on = schema.TextLine(
-        title=_(u"Resource's publication date in dd/mm/yyyy format"),
-        required=True,
-    )
-
-    source_uri = schema.TextLine(
-        title=_(u"Resource's URI"),
-        required=True,
-    )
-
-
-class ICatalogueArticle(ICatalogueBase):
-
-    content = schema.TextLine(
-        title=_(u"Resource's content"),
-        required=True,
-    )
-
-
-class ICatalogueDocument(ICatalogueBase):
-
-    file = schema.TextLine(
-        title=_(u"Resource file"),
-        required=True,
-    )
-
-    description = schema.TextLine(
-        title=_(u"Resource's description"),
-        required=True,
-    )
-
-
-class ICatalogueLink(ICatalogueBase):
-
-    url = schema.TextLine(
-        title=_(u"Resource url"),
-        required=True,
-    )
-
-    description = schema.TextLine(
-        title=_(u"Resource's description in text/html"),
-        required=True,
-    )
+    def index_delete():
+        """
+        A method to register the deletion of the object
+        in the catalogue
+        """
