@@ -26,6 +26,12 @@ class ICatalogueIndexerSettings(Interface):
 
 class ICatalogueBase(Interface):
 
+    def get_values_to_index():
+        """
+        return a dict with all items which should be passed to the
+        webservice
+        """
+
     def index_creation():
         """
         A method to index this object in the catalogue
