@@ -27,6 +27,7 @@ setup(name='bise.catalogueindexer',
           'setuptools',
           # -*- Extra requirements: -*-
           'plone.app.registry',
+          'requests',
       ],
       entry_points="""
       # -*- Entry points: -*-
