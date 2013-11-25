@@ -1,0 +1,14 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="bise.catalogueindexer">
+
+    <!-- Control panel -->
+    <browser:page
+        name="catalogue-indexer-settings"
+        for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+        class=".controlpanel.CatalogueIndexerSettingsControlPanel"
+        permission="cmf.ManagePortal"
+        />
+
+</configure>

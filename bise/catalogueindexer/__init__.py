@@ -1,2 +1,3 @@
-# -*- extra stuff goes here -*-
+from zope.i18nmessageid import MessageFactory
 
+CatalogueIndexerMessageFactory = MessageFactory('bise.catalogueindexer')
