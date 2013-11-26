@@ -19,7 +19,7 @@
 
   <subscriber
     for="plone.dexterity.interfaces.IDexterityContent
-         zope.lifecycleevent.IObjectCreatedEvent"
+         zope.lifecycleevent.IObjectAddedEvent"
     handler=".subscribers.create_item"
     />
 
