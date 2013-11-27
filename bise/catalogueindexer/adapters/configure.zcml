@@ -9,19 +9,19 @@
     />
 
   <adapter
-    factory=".basic.PACCataloger"
+    factory=".basic.PACDocumentCataloguer"
     for="plone.app.contenttypes.interfaces.IDocument"
     provides="bise.catalogueindexer.interfaces.ICatalogueBase"
     />
 
   <adapter
-    factory=".basic.PACCataloger"
+    factory=".basic.PACDocumentCataloguer"
     for="plone.app.contenttypes.interfaces.INewsItem"
     provides="bise.catalogueindexer.interfaces.ICatalogueBase"
     />
 
   <adapter
-    factory=".basic.PACCataloger"
+    factory=".basic.PACDocumentCataloguer"
     for="cs.folderishpage.folderishpage.IFolderishPage"
     provides="bise.catalogueindexer.interfaces.ICatalogueBase"
     />

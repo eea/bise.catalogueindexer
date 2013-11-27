@@ -85,7 +85,7 @@ class BaseObjectCataloguer(object):
                 )
 
 
-class PACCataloger(BaseObjectCataloguer):
+class PACDocumentCataloguer(BaseObjectCataloguer):
 
     def get_values_to_index(self):
         context = self.context
@@ -118,3 +118,5 @@ class PACCataloger(BaseObjectCataloguer):
             return items
         except:
             return {}
+
+
