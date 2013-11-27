@@ -57,7 +57,6 @@ class BaseObjectCataloguer(object):
     def index_delete(self):
         raise NotImplementedError
 
-
 class PACCataloger(BaseObjectCataloguer):
 
     def get_values_to_index(self):
@@ -67,20 +66,26 @@ class PACCataloger(BaseObjectCataloguer):
             items = {}
             # XXX
             user = api.user.get(context.Creator())
+            fullname = user.getProperty('fullname') or user.getId()
             items['article[site_id]'] = self._get_catalog_site_id()
-            items['article[author]'] = user.getProperty('fullname') or user.getId() # should be context.creator
-            items['article[language_ids]'] = '6' # hardcoded. should be context.language
+            # should be context.creator
+            items['article[author]'] = fullname
+            # XXX hardcoded. should be context.language
+            items['article[language_ids]'] = '6'
             items['article[title]'] = metadata.title
             items['article[english_title]'] = metadata.title
-            items['article[published_on]'] = context.created().strftime('%d/%m/%Y')
+            created = context.created().strftime('%d/%m/%Y')
+            items['article[published_on]'] = created
             if api.content.get_state(obj=context) == 'published':
                 items['article[approved]'] = True
                 if metadata.effective:
-                    items['article[approved_at]'] = metadata.effective.strftime('%d/%m/%Y')
+                    effective = metadata.effective.strftime('%d/%m/%Y')
                 else:
-                    items['article[approved_at]'] = DateTime.DateTime().strftime('%d/%m/%Y')
+                    effective = DateTime.DateTime().strftime('%d/%m/%Y')
+                items['article[approved_at]'] = effective
             items['article[source_url]'] = context.absolute_url()
-            items['article[content]'] = metadata.description + u' ' + context.text.output
+            content = metadata.description + u' ' + context.text.output
+            items['article[content]'] = content
             items['resource_type'] = 'article'
             return items
         except:
