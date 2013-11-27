@@ -52,10 +52,38 @@ class BaseObjectCataloguer(object):
                 )
 
     def index_update(self):
-        raise NotImplementedError
+            url = self._get_catalog_url()
+            items = self.get_values_to_index()
+            if items and url:
+                items['source_url'] = self.context.absolute_url()
+                resp = requests.put(
+                    url,
+                    data=items,
+                )
+                if not resp.ok:
+                    log = getLogger('index_update')
+                    log.info('Error updating {0}'.format(
+                        '/'.join(self.context.getPhysicalPath())
+                        )
+                    )
 
     def index_delete(self):
-        raise NotImplementedError
+        url = self._get_catalog_url()
+        if url:
+            items = {}
+            items['resource_type'] = 'article'
+            items['source_url'] = self.context.absolute_url()
+            resp = requests.delete(
+                url,
+                data=items,
+            )
+            if not resp.ok:
+                log = getLogger('index_delete')
+                log.info('Error deleting {0}'.format(
+                    '/'.join(self.context.getPhysicalPath())
+                    )
+                )
+
 
 class PACCataloger(BaseObjectCataloguer):
 
