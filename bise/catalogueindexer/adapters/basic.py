@@ -52,20 +52,20 @@ class BaseObjectCataloguer(object):
                 )
 
     def index_update(self):
-            url = self._get_catalog_url()
-            items = self.get_values_to_index()
-            if items and url:
-                items['source_url'] = self.context.absolute_url()
-                resp = requests.put(
-                    url,
-                    data=items,
-                )
-                if not resp.ok:
-                    log = getLogger('index_update')
-                    log.info('Error updating {0}'.format(
-                        '/'.join(self.context.getPhysicalPath())
-                        )
+        url = self._get_catalog_url()
+        items = self.get_values_to_index()
+        if items and url:
+            items['source_url'] = self.context.absolute_url()
+            resp = requests.put(
+                url,
+                data=items,
+            )
+            if not resp.ok:
+                log = getLogger('index_update')
+                log.info('Error updating {0}'.format(
+                    '/'.join(self.context.getPhysicalPath())
                     )
+                )
 
     def index_delete(self):
         url = self._get_catalog_url()
