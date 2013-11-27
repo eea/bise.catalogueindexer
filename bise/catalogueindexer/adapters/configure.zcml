@@ -12,7 +12,19 @@
     factory=".basic.PACCataloger"
     for="plone.app.contenttypes.interfaces.IDocument"
     provides="bise.catalogueindexer.interfaces.ICatalogueBase"
-
     />
+
+  <adapter
+    factory=".basic.PACCataloger"
+    for="plone.app.contenttypes.interfaces.INewsItem"
+    provides="bise.catalogueindexer.interfaces.ICatalogueBase"
+    />
+
+  <adapter
+    factory=".basic.PACCataloger"
+    for="cs.folderishpage.folderishpage.IFolderishPage"
+    provides="bise.catalogueindexer.interfaces.ICatalogueBase"
+    />
+
 
 </configure>
