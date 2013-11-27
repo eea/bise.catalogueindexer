@@ -3,11 +3,12 @@ from logging import getLogger
 from plone import api
 from plone.app.dexterity.behaviors.metadata import IDublinCore
 from plone.registry.interfaces import IRegistry
+from Products.CMFCore.WorkflowCore import WorkflowException
 from zope.component import getUtility
+from StringIO import StringIO
 
 import DateTime
 import requests
-
 
 
 class BaseObjectCataloguer(object):
@@ -40,9 +41,15 @@ class BaseObjectCataloguer(object):
         url = self._get_catalog_url()
         items = self.get_values_to_index()
         if items and url:
+            files = {}
+            if 'document[file]' in items:
+                files['document[file]'] = items.get('document[file]')
+                del items['document[file]']
+
             resp = requests.post(
                 url,
                 data=items,
+                files=files,
             )
             if not resp.ok:
                 log = getLogger('index_creation')
@@ -56,9 +63,15 @@ class BaseObjectCataloguer(object):
         items = self.get_values_to_index()
         if items and url:
             items['source_url'] = self.context.absolute_url()
+            files = {}
+            if 'document[file]' in items:
+                files['document[file]'] = items.get('document[file]')
+                del items['document[file]']
+
             resp = requests.put(
                 url,
                 data=items,
+                files=files,
             )
             if not resp.ok:
                 log = getLogger('index_update')
@@ -71,7 +84,8 @@ class BaseObjectCataloguer(object):
         url = self._get_catalog_url()
         if url:
             items = {}
-            items['resource_type'] = 'article'
+            ditems = self.get_values_to_index()
+            items['resource_type'] = ditems.get('resource_type', '')
             items['source_url'] = self.context.absolute_url()
             resp = requests.delete(
                 url,
@@ -104,13 +118,21 @@ class PACDocumentCataloguer(BaseObjectCataloguer):
             items['article[english_title]'] = metadata.title
             created = context.created().strftime('%d/%m/%Y')
             items['article[published_on]'] = created
-            if api.content.get_state(obj=context) == 'published':
-                items['article[approved]'] = True
-                if metadata.effective:
-                    effective = metadata.effective.strftime('%d/%m/%Y')
+            try:
+                if api.content.get_state(obj=context) == 'published':
+                    items['article[approved]'] = True
+                    if metadata.effective:
+                        effective = metadata.effective.strftime('%d/%m/%Y')
+                    else:
+                        effective = DateTime.DateTime().strftime('%d/%m/%Y')
+                    items['article[approved_at]'] = effective
                 else:
-                    effective = DateTime.DateTime().strftime('%d/%m/%Y')
-                items['article[approved_at]'] = effective
+                    items['article[approved]'] = False
+                    items['article[approved_at]'] = u''
+            except WorkflowException:
+                items['article[approved]'] = True
+                items['article[approved_at]'] = created
+
             items['article[source_url]'] = context.absolute_url()
             content = metadata.description + u' ' + context.text.output
             items['article[content]'] = content
@@ -120,3 +142,42 @@ class PACDocumentCataloguer(BaseObjectCataloguer):
             return {}
 
 
+class PACFileCataloguer(PACDocumentCataloguer):
+
+    def get_values_to_index(self):
+        context = self.context
+        items = {}
+        user = api.user.get(context.Creator())
+        fullname = user.getProperty('fullname') or user.getId()
+        items['document[site_id]'] = self._get_catalog_site_id()
+        # should be context.creator
+        items['document[author]'] = fullname
+        # XXX hardcoded. should be context.language
+        items['document[language_ids]'] = '6'
+        items['document[title]'] = context.title
+        items['document[english_title]'] = context.title
+        created = context.created().strftime('%d/%m/%Y')
+        items['document[published_on]'] = created
+        try:
+            if api.content.get_state(obj=context) == 'published':
+                items['document[approved]'] = True
+                if context.effective:
+                    effective = context.contexteffective.strftime('%d/%m/%Y')
+                else:
+                    effective = DateTime.DateTime().strftime('%d/%m/%Y')
+                items['document[approved_at]'] = effective
+            else:
+                items['document[approved]'] = False
+                items['document[approved_at]'] = u''
+        except WorkflowException:
+            items['document[approved]'] = True
+            items['document[approved_at]'] = created
+
+        items['document[source_url]'] = context.absolute_url()
+
+        items['document[description]'] = context.description
+        filedata = (context.file.filename, StringIO(context.file.data))
+        items['document[file]'] = filedata
+        items['resource_type'] = 'document'
+
+        return items
