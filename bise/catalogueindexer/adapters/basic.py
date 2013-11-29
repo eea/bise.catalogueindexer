@@ -181,3 +181,43 @@ class PACFileCataloguer(PACDocumentCataloguer):
         items['resource_type'] = 'document'
 
         return items
+
+
+class PACLinkCataloguer(PACDocumentCataloguer):
+
+    def get_values_to_index(self):
+        context = self.context
+        items = {}
+        user = api.user.get(context.Creator())
+        fullname = user.getProperty('fullname') or user.getId()
+        items['link[site_id]'] = self._get_catalog_site_id()
+        # should be context.creator
+        items['link[author]'] = fullname
+        # XXX hardcoded. should be context.language
+        items['link[language_ids]'] = '6'
+        items['link[title]'] = context.title
+        items['link[english_title]'] = context.title
+        created = context.created().strftime('%d/%m/%Y')
+        items['link[published_on]'] = created
+        try:
+            if api.content.get_state(obj=context) == 'published':
+                items['link[approved]'] = True
+                if context.effective:
+                    effective = context.effective.strftime('%d/%m/%Y')
+                else:
+                    effective = DateTime.DateTime().strftime('%d/%m/%Y')
+                items['link[approved_at]'] = effective
+            else:
+                items['link[approved]'] = False
+                items['link[approved_at]'] = u''
+        except WorkflowException:
+            items['link[approved]'] = True
+            items['link[approved_at]'] = created
+
+        items['link[source_url]'] = context.absolute_url()
+
+        items['link[description]'] = context.description
+        items['link[url]'] = context.remoteUrl
+        items['resource_type'] = 'link'
+
+        return items

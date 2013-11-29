@@ -32,5 +32,11 @@
     provides="bise.catalogueindexer.interfaces.ICatalogueBase"
     />
 
+  <adapter
+    factory=".basic.PACLinkCataloguer"
+    for="plone.app.contenttypes.interfaces.ILink"
+    provides="bise.catalogueindexer.interfaces.ICatalogueBase"
+    />
+
 
 </configure>
