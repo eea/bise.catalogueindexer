@@ -32,10 +32,10 @@ class BaseObjectCataloguer(object):
         settings = registry.forInterface(ICatalogueIndexerSettings)
         return settings.catalogue_endpoint
 
-    def _get_catalog_site_id(self):
+    def _get_catalog_authtoken(self):
         registry = getUtility(IRegistry)
         settings = registry.forInterface(ICatalogueIndexerSettings)
-        return settings.catalogue_siteid
+        return settings.catalogue_authtoken
 
     def index_creation(self):
         url = self._get_catalog_url()
@@ -62,7 +62,8 @@ class BaseObjectCataloguer(object):
         url = self._get_catalog_url()
         items = self.get_values_to_index()
         if items and url:
-            items['source_url'] = self.context.absolute_url()
+            resource_type = items.get('resource_type')
+            items['{0}[source_url]'.format(resource_type)] = self.context.absolute_url()
             files = {}
             if 'document[file]' in items:
                 files['document[file]'] = items.get('document[file]')
@@ -85,8 +86,10 @@ class BaseObjectCataloguer(object):
         if url:
             items = {}
             ditems = self.get_values_to_index()
-            items['resource_type'] = ditems.get('resource_type', '')
-            items['source_url'] = self.context.absolute_url()
+            items['auth_token'] = ditems.get('auth_token', '')
+            resource_type = ditems.get('resource_type', '')
+            items['resource_type'] = resource_type
+            items['{0}[source_url]'.format(resource_type)] = self.context.absolute_url()
             resp = requests.delete(
                 url,
                 data=items,
@@ -106,14 +109,14 @@ class PACDocumentCataloguer(BaseObjectCataloguer):
         try:
             metadata = IDublinCore(context)
             items = {}
-            # XXX
+            items['auth_token'] = self._get_catalog_authtoken()
+            items['language'] = context.Language().upper()
+
+            # XXX: should be context.creator
             user = api.user.get(context.Creator())
             fullname = user.getProperty('fullname') or user.getId()
-            items['article[site_id]'] = self._get_catalog_site_id()
-            # should be context.creator
             items['article[author]'] = fullname
-            # XXX hardcoded. should be context.language
-            items['article[language_ids]'] = '6'
+
             items['article[title]'] = metadata.title
             items['article[english_title]'] = metadata.title
             created = context.created().strftime('%d/%m/%Y')
@@ -150,13 +153,14 @@ class PACFileCataloguer(PACDocumentCataloguer):
     def get_values_to_index(self):
         context = self.context
         items = {}
+        items['auth_token'] = self._get_catalog_authtoken()
+        items['language'] = context.Language().upper()
+
+        # XXX should be context.creator
         user = api.user.get(context.Creator())
         fullname = user.getProperty('fullname') or user.getId()
-        items['document[site_id]'] = self._get_catalog_site_id()
-        # should be context.creator
         items['document[author]'] = fullname
-        # XXX hardcoded. should be context.language
-        items['document[language_ids]'] = '6'
+
         items['document[title]'] = context.title
         items['document[english_title]'] = context.title
         created = context.created().strftime('%d/%m/%Y')
@@ -194,13 +198,14 @@ class PACLinkCataloguer(PACDocumentCataloguer):
     def get_values_to_index(self):
         context = self.context
         items = {}
+        items['auth_token'] = self._get_catalog_authtoken()
+        items['language'] = context.Language().upper()
+
+        # XXX should be context.creator
         user = api.user.get(context.Creator())
         fullname = user.getProperty('fullname') or user.getId()
-        items['link[site_id]'] = self._get_catalog_site_id()
-        # should be context.creator
         items['link[author]'] = fullname
-        # XXX hardcoded. should be context.language
-        items['link[language_ids]'] = '6'
+
         items['link[title]'] = context.title
         items['link[english_title]'] = context.title
         created = context.created().strftime('%d/%m/%Y')
