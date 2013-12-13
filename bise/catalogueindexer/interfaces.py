@@ -16,10 +16,10 @@ class ICatalogueIndexerSettings(Interface):
             )
     )
 
-    catalogue_siteid = schema.TextLine(
-        title=_(u'Site identifier for the Catalogue'),
-        description=_(u"Enter this site's identifier in the catalog. If "
-                      u"unkown, ask catalogue admins for this value."
+    catalogue_authtoken = schema.TextLine(
+        title=_(u'Authorization token for the Catalogue'),
+        description=_(u"Enter the authorization token to call the API "
+                      u"of the Catalogue"
             )
     )
 
