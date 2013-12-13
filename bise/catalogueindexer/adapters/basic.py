@@ -122,7 +122,10 @@ class PACDocumentCataloguer(BaseObjectCataloguer):
                 if api.content.get_state(obj=context) == 'published':
                     items['article[approved]'] = True
                     if metadata.effective:
-                        effective = metadata.effective.strftime('%d/%m/%Y')
+                        if callable(metadata.effective):
+                            effective = metadata.effective().strftime('%d/%m/%Y')
+                        else:
+                            effective = metadata.effective.strftime('%d/%m/%Y')
                     else:
                         effective = DateTime.DateTime().strftime('%d/%m/%Y')
                     items['article[approved_at]'] = effective
@@ -162,7 +165,10 @@ class PACFileCataloguer(PACDocumentCataloguer):
             if api.content.get_state(obj=context) == 'published':
                 items['document[approved]'] = True
                 if context.effective:
-                    effective = context.contexteffective.strftime('%d/%m/%Y')
+                    if callable(context.effective):
+                        effective = context.effective().strftime('%d/%m/%Y')
+                    else:
+                        effective = context.effective.strftime('%d/%m/%Y')
                 else:
                     effective = DateTime.DateTime().strftime('%d/%m/%Y')
                 items['document[approved_at]'] = effective
@@ -203,7 +209,10 @@ class PACLinkCataloguer(PACDocumentCataloguer):
             if api.content.get_state(obj=context) == 'published':
                 items['link[approved]'] = True
                 if context.effective:
-                    effective = context.effective.strftime('%d/%m/%Y')
+                    if callable(context.effective):
+                        effective = context.effective().strftime('%d/%m/%Y')
+                    else:
+                        effective = context.effective.strftime('%d/%m/%Y')
                 else:
                     effective = DateTime.DateTime().strftime('%d/%m/%Y')
                 items['link[approved_at]'] = effective
