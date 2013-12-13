@@ -123,7 +123,7 @@ class PACDocumentCataloguer(BaseObjectCataloguer):
             items['article[published_on]'] = created
             try:
                 if api.content.get_state(obj=context) == 'published':
-                    items['article[approved]'] = True
+                    items['article[approved]'] = 'true'
                     if metadata.effective:
                         if callable(metadata.effective):
                             effective = metadata.effective().strftime('%d/%m/%Y')
@@ -133,10 +133,10 @@ class PACDocumentCataloguer(BaseObjectCataloguer):
                         effective = DateTime.DateTime().strftime('%d/%m/%Y')
                     items['article[approved_at]'] = effective
                 else:
-                    items['article[approved]'] = False
+                    items['article[approved]'] = '0'
                     items['article[approved_at]'] = u''
             except WorkflowException:
-                items['article[approved]'] = True
+                items['article[approved]'] = 'true'
                 items['article[approved_at]'] = created
 
             items['article[source_url]'] = context.absolute_url()
@@ -167,7 +167,7 @@ class PACFileCataloguer(PACDocumentCataloguer):
         items['document[published_on]'] = created
         try:
             if api.content.get_state(obj=context) == 'published':
-                items['document[approved]'] = True
+                items['document[approved]'] = 'true'
                 if context.effective:
                     if callable(context.effective):
                         effective = context.effective().strftime('%d/%m/%Y')
@@ -177,10 +177,10 @@ class PACFileCataloguer(PACDocumentCataloguer):
                     effective = DateTime.DateTime().strftime('%d/%m/%Y')
                 items['document[approved_at]'] = effective
             else:
-                items['document[approved]'] = False
+                items['document[approved]'] = 'false'
                 items['document[approved_at]'] = u''
         except WorkflowException:
-            items['document[approved]'] = True
+            items['document[approved]'] = 'true'
             items['document[approved_at]'] = created
 
         items['document[source_url]'] = context.absolute_url()
@@ -212,7 +212,7 @@ class PACLinkCataloguer(PACDocumentCataloguer):
         items['link[published_on]'] = created
         try:
             if api.content.get_state(obj=context) == 'published':
-                items['link[approved]'] = True
+                items['link[approved]'] = 'true'
                 if context.effective:
                     if callable(context.effective):
                         effective = context.effective().strftime('%d/%m/%Y')
@@ -222,10 +222,10 @@ class PACLinkCataloguer(PACDocumentCataloguer):
                     effective = DateTime.DateTime().strftime('%d/%m/%Y')
                 items['link[approved_at]'] = effective
             else:
-                items['link[approved]'] = False
+                items['link[approved]'] = 'false'
                 items['link[approved_at]'] = u''
         except WorkflowException:
-            items['link[approved]'] = True
+            items['link[approved]'] = 'true'
             items['link[approved_at]'] = created
 
         items['link[source_url]'] = context.absolute_url()
