@@ -11,4 +11,12 @@
         permission="cmf.ManagePortal"
         />
 
+
+    <browser:page
+        name="all-content-indexer"
+        for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+        class=".contentindexer.ContentIndexer"
+        permission="cmf.ManagePortal"
+        />
+
 </configure>
