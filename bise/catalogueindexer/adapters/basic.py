@@ -142,7 +142,11 @@ class PACDocumentCataloguer(BaseObjectCataloguer):
                 items['article[approved_at]'] = created
 
             items['article[source_url]'] = context.absolute_url()
-            content = metadata.description + u' ' + context.text.output
+
+            if context.text:
+                content = metadata.description + u' ' + context.text.output
+            else:
+                content = metadata.description
 
             items['article[content]'] = content
             items['resource_type'] = 'article'
