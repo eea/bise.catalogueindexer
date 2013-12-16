@@ -4,8 +4,8 @@ from plone import api
 from plone.app.dexterity.behaviors.metadata import IDublinCore
 from plone.registry.interfaces import IRegistry
 from Products.CMFCore.WorkflowCore import WorkflowException
-from zope.component import getUtility
 from StringIO import StringIO
+from zope.component import getUtility
 
 import DateTime
 import requests
