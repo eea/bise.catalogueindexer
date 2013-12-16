@@ -57,6 +57,8 @@ class BaseObjectCataloguer(object):
                     '/'.join(self.context.getPhysicalPath())
                     )
                 )
+            import time
+            time.sleep(1)
 
     def index_update(self):
         url = self._get_catalog_url()
@@ -141,10 +143,14 @@ class PACDocumentCataloguer(BaseObjectCataloguer):
 
             items['article[source_url]'] = context.absolute_url()
             content = metadata.description + u' ' + context.text.output
+
             items['article[content]'] = content
             items['resource_type'] = 'article'
             return items
-        except:
+        except Exception, e:
+            from logging import getLogger
+            log = getLogger(__name__)
+            log.exception(e)
             return {}
 
 

@@ -3,6 +3,8 @@ from plone import api
 from Products.Five.browser import BrowserView
 from zope.component import queryAdapter
 
+from requests import ConnectionError
+
 
 class ContentIndexer(BrowserView):
     def __call__(self, *args, **kwargs):
@@ -12,7 +14,16 @@ class ContentIndexer(BrowserView):
         for content in self.get_contents():
             adapter = queryAdapter(content, ICatalogueBase)
             if adapter is not None:
-                adapter.index_creation()
+                try:
+                    adapter.index_creation()
+                except ConnectionError:
+                    import time
+                    time.sleep(3)
+                    try:
+                        adapter.index_creation()
+                    except ConnectionError:
+                        log.info('Error indexing')
+                        continue
                 log.info('Content indexed: {0}'.format(
                     content.getPhysicalPath()
                     )
