@@ -116,9 +116,12 @@ class PACDocumentCataloguer(BaseObjectCataloguer):
 
             # XXX: should be context.creator
             user = api.user.get(context.Creator())
-            fullname = user.getProperty('fullname') or user.getId()
-            items['article[author]'] = fullname
+            if user is not None:
+                fullname = user.getProperty('fullname') or user.getId()
+            else:
+                fullname = context.Creator()
 
+            items['article[author]'] = fullname
             items['article[title]'] = metadata.title
             items['article[english_title]'] = metadata.title
             created = context.created().strftime('%d/%m/%Y')
@@ -168,9 +171,12 @@ class PACFileCataloguer(PACDocumentCataloguer):
 
         # XXX should be context.creator
         user = api.user.get(context.Creator())
-        fullname = user.getProperty('fullname') or user.getId()
-        items['document[author]'] = fullname
+        if user is not None:
+            fullname = user.getProperty('fullname') or user.getId()
+        else:
+            fullname = context.Creator()
 
+        items['document[author]'] = fullname
         items['document[title]'] = context.title
         items['document[english_title]'] = context.title
         created = context.created().strftime('%d/%m/%Y')
@@ -213,9 +219,12 @@ class PACLinkCataloguer(PACDocumentCataloguer):
 
         # XXX should be context.creator
         user = api.user.get(context.Creator())
-        fullname = user.getProperty('fullname') or user.getId()
-        items['link[author]'] = fullname
+        if user is not None:
+            fullname = user.getProperty('fullname') or user.getId()
+        else:
+            fullname = context.Creator()
 
+        items['link[author]'] = fullname
         items['link[title]'] = context.title
         items['link[english_title]'] = context.title
         created = context.created().strftime('%d/%m/%Y')

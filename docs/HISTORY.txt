@@ -4,6 +4,9 @@ Changelog
 1.1 (UNRELEASED)
 ------------------
 
+- Fix creator handling for content created by users who
+  do not exist in current instance's user folder
+  [erral]
 
 1.0 (2013-12-16)
 -------------------
