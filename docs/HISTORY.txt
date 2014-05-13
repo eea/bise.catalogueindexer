@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.2 (UNRELEASED)
+1.2 (2014-05-13)
 -------------------
 
 - Do not catalogue the content author. Refs #19412
