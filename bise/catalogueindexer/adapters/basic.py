@@ -121,7 +121,6 @@ class PACDocumentCataloguer(BaseObjectCataloguer):
             else:
                 fullname = context.Creator()
 
-            items['article[author]'] = fullname
             items['article[title]'] = metadata.title
             items['article[english_title]'] = metadata.title
             created = context.created().strftime('%d/%m/%Y')
@@ -176,7 +175,6 @@ class PACFileCataloguer(PACDocumentCataloguer):
         else:
             fullname = context.Creator()
 
-        items['document[author]'] = fullname
         items['document[title]'] = context.title
         items['document[english_title]'] = context.title
         created = context.created().strftime('%d/%m/%Y')
@@ -224,7 +222,6 @@ class PACLinkCataloguer(PACDocumentCataloguer):
         else:
             fullname = context.Creator()
 
-        items['link[author]'] = fullname
         items['link[title]'] = context.title
         items['link[english_title]'] = context.title
         created = context.created().strftime('%d/%m/%Y')

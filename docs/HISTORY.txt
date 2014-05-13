@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.2 (UNRELEASED)
+-------------------
+
+- Do not catalogue the content author. Refs #19412
+  [erral]
+
 1.1 (2013-12-17)
 ------------------
 
