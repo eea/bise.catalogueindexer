@@ -85,12 +85,9 @@ class BaseObjectCataloguer(object):
 
     def index_delete(self):
         url = self._get_catalog_url()
+        items = self.get_values_to_index()
         if url:
-            items = {}
-            ditems = self.get_values_to_index()
-            items['auth_token'] = ditems.get('auth_token', '')
-            resource_type = ditems.get('resource_type', '')
-            items['resource_type'] = resource_type
+            resource_type = items.get('resource_type', '')
             items['{0}[source_url]'.format(resource_type)] = self.context.absolute_url()
             resp = requests.delete(
                 url,
