@@ -21,7 +21,7 @@
     />
 
   <adapter
-    factory=".basic.PACDocumentCataloguer"
+    factory=".basic.FolderishPageCataloger"
     for="cs.folderishpage.folderishpage.IFolderishPage"
     provides="bise.catalogueindexer.interfaces.ICatalogueBase"
     />

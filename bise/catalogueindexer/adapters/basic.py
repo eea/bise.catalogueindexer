@@ -248,3 +248,17 @@ class PACLinkCataloguer(PACDocumentCataloguer):
         items['resource_type'] = 'link'
 
         return items
+
+
+class FolderishPageCataloger(PACDocumentCataloguer):
+    def get_values_to_index(self):
+        items = super(FolderishPageCataloger, self).get_values_to_index()
+        items['article[target_list]'] = self.context.targets
+        items['article[target_list]'] = self.context.actions
+        tags = []
+        for tag in self.context.cataloguetags:
+            tagid, tagname = tag.split('-')
+            tags.append(tagname)
+        items['article[tag_list]'] = u','.join(tags)
+
+        return items
