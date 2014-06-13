@@ -254,7 +254,7 @@ class FolderishPageCataloger(PACDocumentCataloguer):
     def get_values_to_index(self):
         items = super(FolderishPageCataloger, self).get_values_to_index()
         items['article[target_list]'] = self.context.targets
-        items['article[target_list]'] = self.context.actions
+        items['article[action_list]'] = self.context.actions
         tags = []
         for tag in self.context.cataloguetags:
             tagid, tagname = tag.split('-')
