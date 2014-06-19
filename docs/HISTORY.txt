@@ -1,8 +1,11 @@
 Changelog
 =========
 
-1.3 (UNRELEASED)
+1.3 (2014-06-19)
 -------------------
+
+- Catalog also actions and targets
+  [erral, msantamaria]
 
 - Fix deletion of images. Refs #19815
   [erral]
