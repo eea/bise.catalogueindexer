@@ -1,10 +1,12 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.4'
+NAME = 'bise.catalogueindexer'
+PATH = NAME.split('.') + ['version.txt']
+VERSION = open(os.path.join(*PATH)).read().strip()
 
-setup(name='bise.catalogueindexer',
-      version=version,
+setup(name=NAME,
+      version=VERSION,
       description="Catalog indexer methods for BISE",
       long_description=open("README.rst").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),

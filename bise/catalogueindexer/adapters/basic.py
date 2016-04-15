@@ -61,6 +61,8 @@ class BaseObjectCataloguer(object):
             time.sleep(1)
 
     def index_update(self):
+        print "tibi, fix this"
+        return
         url = self._get_catalog_url()
         items = self.get_values_to_index()
         if items and url:
