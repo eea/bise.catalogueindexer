@@ -1,14 +1,15 @@
+from Products.CMFCore.WorkflowCore import WorkflowException
+from StringIO import StringIO
 from bise.catalogueindexer.interfaces import ICatalogueIndexerSettings
 from logging import getLogger
 from plone import api
 from plone.app.dexterity.behaviors.metadata import IDublinCore
 from plone.registry.interfaces import IRegistry
-from Products.CMFCore.WorkflowCore import WorkflowException
-from StringIO import StringIO
 from zope.component import getUtility
-
 import DateTime
 import requests
+
+logger = getLogger("bise.catalogueindexer")
 
 
 class BaseObjectCataloguer(object):
@@ -52,17 +53,11 @@ class BaseObjectCataloguer(object):
                 files=files,
             )
             if not resp.ok:
-                log = getLogger('index_creation')
-                log.info('Error indexing creation of {0}'.format(
-                    '/'.join(self.context.getPhysicalPath())
-                    )
-                )
-            import time
-            time.sleep(1)
+                logger.error('Error indexing creation of {0}'.format(
+                    '/'.join(self.context.getPhysicalPath())))
+            #time.sleep(1)
 
     def index_update(self):
-        print "tibi, fix this"
-        return
         url = self._get_catalog_url()
         items = self.get_values_to_index()
         if items and url:
@@ -79,11 +74,8 @@ class BaseObjectCataloguer(object):
                 files=files,
             )
             if not resp.ok:
-                log = getLogger('index_update')
-                log.info('Error updating {0}'.format(
-                    '/'.join(self.context.getPhysicalPath())
-                    )
-                )
+                logger.error('Error updating {0}'.format(
+                    '/'.join(self.context.getPhysicalPath())))
 
     def index_delete(self):
         url = self._get_catalog_url()
@@ -96,11 +88,8 @@ class BaseObjectCataloguer(object):
                 data=items,
             )
             if not resp.ok:
-                log = getLogger('index_delete')
-                log.info('Error deleting {0}'.format(
-                    '/'.join(self.context.getPhysicalPath())
-                    )
-                )
+                logger.error('Error deleting {0}'.format(
+                    '/'.join(self.context.getPhysicalPath())))
 
 
 class PACDocumentCataloguer(BaseObjectCataloguer):
@@ -120,6 +109,7 @@ class PACDocumentCataloguer(BaseObjectCataloguer):
             else:
                 fullname = context.Creator()
 
+            items['article[author]'] = fullname
             items['article[title]'] = metadata.title
             items['article[english_title]'] = metadata.title
             created = context.created().strftime('%d/%m/%Y')
@@ -153,9 +143,7 @@ class PACDocumentCataloguer(BaseObjectCataloguer):
             items['resource_type'] = 'article'
             return items
         except Exception, e:
-            from logging import getLogger
-            log = getLogger(__name__)
-            log.exception(e)
+            logger.exception("Exception converting document to article info: %s", e)
             return {}
 
 
@@ -174,6 +162,7 @@ class PACFileCataloguer(PACDocumentCataloguer):
         else:
             fullname = context.Creator()
 
+        items['document[author]'] = fullname
         items['document[title]'] = context.title
         items['document[english_title]'] = context.title
         created = context.created().strftime('%d/%m/%Y')
@@ -221,6 +210,7 @@ class PACLinkCataloguer(PACDocumentCataloguer):
         else:
             fullname = context.Creator()
 
+        items['link[author]'] = fullname
         items['link[title]'] = context.title
         items['link[english_title]'] = context.title
         created = context.created().strftime('%d/%m/%Y')
