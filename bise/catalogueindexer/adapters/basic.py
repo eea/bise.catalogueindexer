@@ -152,6 +152,13 @@ class PACFileCataloguer(PACDocumentCataloguer):
     def get_values_to_index(self):
         context = self.context
         items = {}
+
+        if context.file:    # Don't index files with no content
+            filedata = (context.file.filename, StringIO(context.file.data))
+            items['document[file]'] = filedata
+        else:
+            return
+
         items['auth_token'] = self._get_catalog_authtoken()
         items['language'] = context.Language().upper()
 
@@ -188,8 +195,6 @@ class PACFileCataloguer(PACDocumentCataloguer):
         items['document[source_url]'] = context.absolute_url()
 
         items['document[description]'] = context.description
-        filedata = (context.file.filename, StringIO(context.file.data))
-        items['document[file]'] = filedata
         items['resource_type'] = 'document'
 
         return items
